@@ -4,6 +4,7 @@
 #include <cmath>
 #include <iostream>
 #include <webots/Supervisor.hpp>
+
 class ChassisPos{
   public:
     bool endPath = false;

@@ -50,7 +50,8 @@ float ChassisPos::findCurvature(ChassisPos pos, float heading, ChassisPos lookah
 float ChassisPos::circleIntersect(ChassisPos p1, 
                                   ChassisPos p2, 
                                   ChassisPos pose, 
-                                  float lookaheadDist) {
+                                  float lookaheadDist) 
+{
     // uses the quadratic formula to calculate intersection points
     ChassisPos d = p2 - p1;
     ChassisPos f = p1 - pose;

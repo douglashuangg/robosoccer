@@ -24,7 +24,6 @@ using namespace webots;
 
 #define BASE_WIDTH_IN 0.052
 
-
 void ChassisPos::follow(std::vector<std::vector<double>> pathPoints, float lookahead, int timeout, bool forwards, bool async, float maxSpeed, Supervisor* robot){
     // call function to get the robots current position estimation
      // if (async) {

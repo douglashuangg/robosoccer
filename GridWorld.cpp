@@ -184,7 +184,7 @@ vector<vector<double>> GridWorld::ExtractPolicy(pair<double, double> currentStat
   currentState = std::make_pair(RoundToNearest(currentState.first, GRID_SIZE), RoundToNearest(currentState.second, GRID_SIZE));
   // optimalPath.push_back(vector<double>{currentState.first, currentState.second});
 
-  //cout << "Extracting Policy" << '\n';
+  // cout << "Extracting Policy" << '\n';
   int count = 0;
   // while(!IsTerminal(currentState)){
   while(!IsTerminal(currentState)){

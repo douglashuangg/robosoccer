@@ -17,7 +17,6 @@ enum class Action {
 
 class GridWorld {
     public:
-        // GridWorld();
         GridWorld(double noise = 0.9, double width = 0.5, double height = 0.5, const std::vector<pair<double, double>> &blocked_states = {}, double discount_factor = 0.99);
         void ValueIteration(pair<double, double> curr_ball_state);
         vector<vector<double>> ExtractPolicy(pair<double, double> currentState);
