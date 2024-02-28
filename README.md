@@ -7,7 +7,7 @@ Robot vs Human Soccer
 ### Developing the control logic with simulations
 Rudimentary autonomous navigation simulated on Webots using path planning with Markov Decision Processes and path following with Pure Pursuit (green robot):
 
-<img src="https://github.com/douglashuangg/robosoccer/blob/main/PurePursuit.gif" alt="GIF" width="400">
+<img src="https://github.com/douglashuangg/robosoccer/blob/main/PurePursuit.gif" alt="GIF" width="500">
 
 
 ### Developing the physical robot and playing field
