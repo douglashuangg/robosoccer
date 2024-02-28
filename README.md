@@ -8,3 +8,10 @@ Robot vs Human Soccer
 Rudimentary autonomous navigation simulated on Webots using path planning with Markov Decision Processes and path following with Pure Pursuit (green robot):
 
 <img src="https://github.com/douglashuangg/robosoccer/blob/main/PurePursuit.gif" alt="GIF" width="400">
+
+
+### Developing the physical robot and playing field
+- Robots only have driving functionality, built on an ESP32 microcontroller
+- 1m x 50cm field
+- Camera overlooking field for localization of ball and robot, discretization algorithm to turn the field into a grid
+- Commands to wheels sent over Bluetooth
