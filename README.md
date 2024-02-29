@@ -1,7 +1,7 @@
 # robosoccer
-Robot vs Human Soccer
-
 Documentation here: https://douglashuang.notion.site/Autonomous-Robot-Soccer-9694813517c744778aaec05ddbe2a816
+
+Robot vs Human Soccer
 
 - Building a real life 1v1 soccer robot with one fully autonomous robot and another one controlled by you!
 
