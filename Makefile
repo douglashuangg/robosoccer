@@ -39,7 +39,7 @@
 ###
 ### ---- C++ Sources ----
 ### if your program uses several C++ source files:
-CXX_SOURCES = robosoccer.cpp aStar.cpp PurePursuit.cpp GridWorld.cpp
+CXX_SOURCES = robosoccer.cpp PurePursuit.cpp GridWorld.cpp
 ###
 ### ---- Compilation options ----
 ### if special compilation flags are necessary:

@@ -208,24 +208,12 @@ void ChassisPos::follow(std::vector<std::vector<double>> pathPoints, float looka
 // "controllerArgs" field of the Robot node
 int main(int argc, char **argv) {
   // create the Robot instance.
-  //const int width = 5;
-  //const int height = 5;
   std::vector<std::vector<double>> path =  {{0.01, 0.05}, {0.01, 0.1}, {0.01, 0.15}, {0.01, 0.2}, {0.01, 0.25}, {0.01, 0.3}, {0.01, 0.35}, {-0, 0.25}};
-  //AStar bStar(width, height);
-  //bStar.displaySomething()
   ChassisPos follower(0, 0, 0);
   Supervisor *robot = new Supervisor();
   follower.follow(path, 0.08, 200, true, false, 6.25, robot);
 
-  // Motor *leftWheel = robot->getMotor("left wheel motor");
-  // Motor *rightWheel = robot->getMotor("right wheel motor");
-  // double targetVelocity = 6.28;
-  // leftWheel->setPosition(INFINITY);
-  // rightWheel->setPosition(INFINITY);
-  
-  //Node *rootNode = robot->getRoot();
-  //Field *childrenField = rootNode->getField("children");
-  //childrenField->importMFNodeFromString(-1, "DEF BALL Ball { translation 0 1 1 }");
+
   Node *ballNode = robot->getFromDef("pingpong");
   Node *botNode = robot->getFromDef("EPUCK");
 
@@ -235,12 +223,6 @@ int main(int argc, char **argv) {
 
   // get the time step of the current world.
   int timeStep = (int)robot->getBasicTimeStep();
-
-  // You should insert a getDevice-like function in order to get the
-  // instance of a device of the robot. Something like:
-  //  Motor *motor = robot->getMotor("motorname");
-  //  DistanceSensor *ds = robot->getDistanceSensor("dsname");
-  //  ds->enable(timeStep);
 
   // Main loop:
   // - perform simulation steps until Webots is stopping the controller

@@ -39,7 +39,6 @@ vector<Action> GridWorld::GetActions() {
   return {Action::UP, Action::DOWN, Action::LEFT, Action::RIGHT};
 }        
 
-
 vector<pair<double, double>> GridWorld::GetTransitions(pair<double, double> state, Action action) {
   vector<pair<double, double>> transitions;
   // if (is_terminal(state)) {
