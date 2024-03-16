@@ -36,13 +36,11 @@ int sgn(float x) {
 }
 
 float ChassisPos::findCurvature(ChassisPos pos, float heading, ChassisPos lookahead){
-    std::cout << "heading" << heading << std::endl;
     float a = -std::tan(heading);
     float c = std::tan(heading)*pos.x - pos.y;
     float x = std::fabs(a*lookahead.x + lookahead.y + c)/std::sqrt(a*a + 1);
     float L = std::hypot(lookahead.x - pos.x, lookahead.y - pos.y);
     float side = sgn(std::sin(heading)*(lookahead.x - pos.x) - std::cos(heading)*(lookahead.y - pos.y));
-    std::cout << "x: " << x << " L " << L << std::endl;
     return side * ((2 * x) / (L*L));
 }
 

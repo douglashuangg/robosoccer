@@ -9,7 +9,7 @@
 #include <webots/Robot.hpp>
 #include <webots/Motor.hpp>
 #include <webots/Supervisor.hpp>
-
+#include <webots/InertialUnit.hpp>
 #include <PurePursuit.h>
 #include <GridWorld.h>
 
@@ -39,11 +39,12 @@ void ChassisPos::follow(std::vector<std::vector<double>> pathPoints, float looka
     Motor *leftMotor = robot->getMotor("left wheel motor");
     Motor *rightMotor = robot->getMotor("right wheel motor");
     Node *robot_node = robot->getFromDef("EPUCK");
+    InertialUnit *inertial_unit = (InertialUnit*)robot->getInertialUnit("inertial unit");
     Field *trans_field = robot_node->getField("translation");
-    Field *rot_field = robot_node->getField("rotation");
     GridWorld gridWorld;
     // const double *ballPosition = ball->getPosition();
-
+    inertial_unit->enable(10);
+   
     // const double *ballPosition = ball->getPosition();
     // cout << "Ball " << ballPosition[0] << ballPosition[1] << endl;
     // double ballX = round(ballPosition[0]*100)/100;
@@ -58,12 +59,11 @@ void ChassisPos::follow(std::vector<std::vector<double>> pathPoints, float looka
   //  DistanceSensor *ds = robot->getDistanceSensor("dsname");
   //  ds->enable(timeStep);
     const double *initial = trans_field->getSFVec3f();
-    const double *initialRot = rot_field->getSFRotation();
    // leftMotor->setVelocity(2.0);
     //rightMotor->setVelocity(2.0);
    
     ChassisPos pose(initial[0], initial[1], 0);
-    std::cout << initial[0] << " " << initial[1] << " " << initialRot[3] << std::endl;
+    std::cout << initial[0] << " " << initial[1] << " " << std::endl;
     ChassisPos lastPose = pose;
     
     float curvature;
@@ -85,9 +85,10 @@ void ChassisPos::follow(std::vector<std::vector<double>> pathPoints, float looka
 
     for(int i = 0; i < timeout/10 && !endPath; i++)
     {
+         const double * inertial_meas = inertial_unit->getRollPitchYaw();
+        std::cout << "INERTIAL" << inertial_meas[0] << inertial_meas[1] << inertial_meas[2] << std::endl;
         const double *values = trans_field->getSFVec3f();
         const double *botPosition = botNode->getPosition();
-        const double *botRotation = rot_field->getSFRotation();
         const double *ballPosition = ball->getPosition();
         cout << "Ball " << ballPosition[0] << ballPosition[1] << endl;
         double ballX = round(ballPosition[0]*100)/100;
@@ -95,10 +96,13 @@ void ChassisPos::follow(std::vector<std::vector<double>> pathPoints, float looka
         std::pair<double, double> currentBallState = std::make_pair(ballX, ballY);
         double currentX = round(botPosition[0]*100)/100;
         double currentY = round(botPosition[1]*100)/100;
-        gridWorld.ValueIteration(currentBallState);
+        
         std::pair<double, double> currentState = std::make_pair(currentX, currentY);
         //if(i == 0){
+        gridWorld.ValueIteration(currentBallState, currentState);
+        // if(i == 0){
         optimalPath = gridWorld.ExtractPolicy(currentState);
+        // }
           // for(int i = 0; i<sizeof(optimalPath); i++){
             // cout << optimalPath[i][0] << " " << optimalPath[i][1] << endl;
           // }
@@ -106,7 +110,7 @@ void ChassisPos::follow(std::vector<std::vector<double>> pathPoints, float looka
     // 
         //std::cout << "Rotation" << botRotation[3] << std::endl;
         // get the current robot position
-        pose = ChassisPos(botPosition[0], botPosition[1], botRotation[3]);
+        pose = ChassisPos(botPosition[0], botPosition[1], inertial_meas[2]);
         lastPose = pose;
        // std::cout << "Position" << values[0] << values[1] <<std::endl;
         
@@ -117,9 +121,11 @@ void ChassisPos::follow(std::vector<std::vector<double>> pathPoints, float looka
         std::cout << closestPoint << optimalPath.size()-1 << std::endl;
         if (closestPoint == optimalPath.size() - 1) {
              cout << "FINISHED" << endl;
-             endPath = true;
-             break;
+             //endPath = true;
+             //break;
         }
+        
+        // check if in between threshold angle
   
         // find the lookahead point
         lookAheadPose = lookaheadPoint(lastLookahead, pose, optimalPath, lookahead);
@@ -132,19 +138,31 @@ void ChassisPos::follow(std::vector<std::vector<double>> pathPoints, float looka
         std::cout << "curvature " << curvature << std::endl;
 
         // setting some arbitrary velocity, don't know how fast it's supposed to be
-        float targetVel = 3;
-        // calculate target left and right wheel velocities
-        float targetLeftVel = (targetVel * (2 + curvature * BASE_WIDTH_IN) / 2);
-        float targetRightVel = (targetVel * (2 - curvature * BASE_WIDTH_IN) / 2);
-
-        std::cout << "VELOCITY: " << targetLeftVel << " " << targetRightVel << std::endl;
-
-        // ratio the target velocities in terms of the max speed or use PID
+        double targetVel = 3;
+        double targetLeftVel;
+        double targetRightVel;
+        
+        double ball_angle = atan2(ballY - currentY, ballX - currentX);
+        // if(std::fabs(ball_angle - botRotation[3] > 0.524)){
+          // std::cout << "corrected" << ball_angle << std::endl;
+          // targetLeftVel = 0;
+          // targetRightVel = 6.25;
+        // } else {
+         // calculate target left and right wheel velocities
+        targetLeftVel = (targetVel * (2.0 + curvature * BASE_WIDTH_IN) / 2.0);
+        targetRightVel = (targetVel * (2.0 - curvature * BASE_WIDTH_IN) / 2.0);
+        std::cout << "Not corrected" << std::endl;
         float ratio = std::max(std::fabs(targetLeftVel), std::fabs(targetRightVel)) / maxSpeed;
         if (ratio > 1) {
-            targetLeftVel /= ratio;
-            targetRightVel /= ratio;
+          targetLeftVel /= ratio;
+          targetRightVel /= ratio;
         }
+        std::cout << "CURRENT ROBOT" << currentX << currentY << std::endl;
+        // }
+        // std::cout << "VELOCITY: " << targetLeftVel << " " << targetRightVel << std::endl;
+
+        // ratio the target velocities in terms of the max speed or use PID
+        
 
         std::cout << "after ratio VELOCITY: " << targetLeftVel << " " << targetRightVel << std::endl;
 
@@ -197,7 +215,7 @@ int main(int argc, char **argv) {
   //bStar.displaySomething()
   ChassisPos follower(0, 0, 0);
   Supervisor *robot = new Supervisor();
-  follower.follow(path, 0.1, 200, true, false, 6.25, robot);
+  follower.follow(path, 0.08, 200, true, false, 6.25, robot);
 
   // Motor *leftWheel = robot->getMotor("left wheel motor");
   // Motor *rightWheel = robot->getMotor("right wheel motor");
