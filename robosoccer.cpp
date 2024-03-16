@@ -45,22 +45,7 @@ void ChassisPos::follow(std::vector<std::vector<double>> pathPoints, float looka
     // const double *ballPosition = ball->getPosition();
     inertial_unit->enable(10);
    
-    // const double *ballPosition = ball->getPosition();
-    // cout << "Ball " << ballPosition[0] << ballPosition[1] << endl;
-    // double ballX = round(ballPosition[0]*100)/100;
-    // double ballY = round(ballPosition[1]*100)/100;
-    // std::pair<double, double> currentBallState = std::make_pair(ballX, ballY);
-    // double currentX = round(botPosition[0]*100)/100;
-    // double currentY = round(botPosition[1]*100)/100;
-    // gridWorld.ValueIteration(currentBallState);
-    // std::pair<double, double> currentState = std::make_pair(currentX, currentY);
-    // vector<vector<double>> optimalPath = gridWorld.ExtractPolicy(currentState);
-    
-  //  DistanceSensor *ds = robot->getDistanceSensor("dsname");
-  //  ds->enable(timeStep);
     const double *initial = trans_field->getSFVec3f();
-   // leftMotor->setVelocity(2.0);
-    //rightMotor->setVelocity(2.0);
    
     ChassisPos pose(initial[0], initial[1], 0);
     std::cout << initial[0] << " " << initial[1] << " " << std::endl;
@@ -98,9 +83,7 @@ void ChassisPos::follow(std::vector<std::vector<double>> pathPoints, float looka
         double currentY = round(botPosition[1]*100)/100;
         
         std::pair<double, double> currentState = std::make_pair(currentX, currentY);
-        //if(i == 0){
         gridWorld.ValueIteration(currentBallState, currentState);
-        // if(i == 0){
         optimalPath = gridWorld.ExtractPolicy(currentState);
         // }
           // for(int i = 0; i<sizeof(optimalPath); i++){
